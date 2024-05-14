@@ -3,6 +3,11 @@ package com.rabbitencoder.restservices;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
+/**
+ * @author rahul
+ */
+
 @SpringBootApplication
 public class SpringzeroApplication {
 
