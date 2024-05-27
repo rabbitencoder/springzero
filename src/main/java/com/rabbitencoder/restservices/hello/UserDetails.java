@@ -1,4 +1,4 @@
-package com.rabbitencoder.restservices.Hello;
+package com.rabbitencoder.restservices.hello;
 
 /**
  * @author rahul
