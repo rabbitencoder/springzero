@@ -1,9 +1,13 @@
 package com.rabbitencoder.restservices.services;
 
 import com.rabbitencoder.restservices.entities.User;
+import com.rabbitencoder.restservices.exceptions.UserExistsException;
+import com.rabbitencoder.restservices.exceptions.UserNotFoundException;
 import com.rabbitencoder.restservices.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,27 +29,38 @@ public class UserService {
     }
 
     //Create User Method
-    public User createUser(User user){
+    public User createUser(User user) throws UserExistsException {
+        User existingUser = userRepository.findByUsername(user.getUsername());
+        if(existingUser != null){
+            throw new UserExistsException("User already exists");
+        }
         return userRepository.save(user);
     }
 
     //getUserById
-    public Optional<User> getUserById(Long id){
+    public Optional<User> getUserById(Long id) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent()){
+            throw new UserNotFoundException("User Not Found in Repository");
+        }
         return user;
     }
 
     //updateUserById
-    public User updateUserById(Long id, User user){
+    public User updateUserById(Long id, User user) throws UserNotFoundException {
+        if(!userRepository.findById(id).isPresent()){
+            throw new UserNotFoundException("User Not Found in Repository with : " + id);
+        }
         user.setId(id);
         return userRepository.save(user);
     }
 
     //deleteUserById
-    public void deleteUserById(Long id ){
-        if (userRepository.findById(id).isPresent()){
-            userRepository.deleteById(id);
+    public void deleteUserById(Long id ) {
+        if (!userRepository.findById(id).isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Not Found in Repository");
         }
+        userRepository.deleteById(id);
     }
 
     //getUserByUsername
