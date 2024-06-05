@@ -1,6 +1,8 @@
 package com.rabbitencoder.restservices.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 /**
  * @author rahul
@@ -18,8 +20,11 @@ public class User {
     @SequenceGenerator(name = "userdetails_seq", sequenceName = "USERDETAILS_SEQ", allocationSize = 1)
     private Long id;
 
+    @NotEmpty(message = "Username is mandatory field, Please provide the username")
     @Column(name = "user_name", length = 15, nullable = false, unique = true)
     private String username;
+
+    @Size(min = 2, message="FirstName should have atleast two characters")
     @Column(name = "first_name", length = 15, nullable = false)
     private String firstname;
     @Column(name = "last_name", length = 15, nullable = false)

@@ -3,11 +3,16 @@ package com.rabbitencoder.restservices.controllers;
 import com.rabbitencoder.restservices.entities.User;
 import com.rabbitencoder.restservices.exceptions.UserExistsException;
 import com.rabbitencoder.restservices.exceptions.UserNotFoundException;
+import com.rabbitencoder.restservices.exceptions.UsernameNotFoundException;
+import com.rabbitencoder.restservices.repositories.UserRepository;
 import com.rabbitencoder.restservices.services.UserService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,10 +27,13 @@ import java.util.Optional;
  */
 
 @RestController
+@Validated
 public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping("/users")
@@ -36,7 +44,7 @@ public class UserController {
     //Create User
     //@RequestBody
     @PostMapping("/users")
-    public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder) throws UserExistsException {
+    public ResponseEntity<Void> createUser(@Valid @RequestBody User user, UriComponentsBuilder ucBuilder) throws UserExistsException {
         try{
             userService.createUser(user);
             HttpHeaders headers = new HttpHeaders();
@@ -50,7 +58,7 @@ public class UserController {
     //getUserById
     //Path Variable
     @GetMapping("/users/{id}")
-    public Optional<User> getUserById(@PathVariable("id") Long id){
+    public Optional<User> getUserById(@PathVariable("id") @Min(1) Long id){
         try {
             return userService.getUserById(id);
         }catch (UserNotFoundException e){
@@ -79,8 +87,13 @@ public class UserController {
 
     //getUserByUsername
     @GetMapping("/users/username/{username}")
-    public User getUserByUsername(@PathVariable("username") String username ){
-        return userService.getUserByUsername(username);
+    public User getUserByUsername(@PathVariable("username") String username ) throws UsernameNotFoundException {
+        User user = userService.getUserByUsername(username);
+        if (user == null) {
+
+            throw new UsernameNotFoundException("Username : " + username + " not found in repository");
+        }
+        return user;
     }
 
 }
