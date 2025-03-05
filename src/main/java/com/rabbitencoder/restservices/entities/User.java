@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 /**
  * @author rahul
  * @date 5/16/2024 12:57 PM
@@ -36,6 +38,9 @@ public class User {
     @Column(name = "ssn", length = 15, nullable = false, unique = true)
     private String ssn;
 
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
+
     public User() {
     }
 
@@ -47,6 +52,14 @@ public class User {
         this.email = email;
         this.role = role;
         this.ssn = ssn;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     public Long getId() {
