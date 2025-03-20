@@ -3,6 +3,7 @@ package com.rabbitencoder.restservices.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name ="userdetails")
-public class User {
+public class User extends RepresentationModel<User> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userdetails_seq")

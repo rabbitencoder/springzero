@@ -3,6 +3,7 @@ package com.rabbitencoder.restservices.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 /**
  * @author rahul
@@ -12,7 +13,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends RepresentationModel<Order> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_Id", length = 15, nullable = false)
